@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "devCommand": "PORT=4000 vercel dev",
+  "devCommand": "PORT=4000 node index.js",
   "builds": [
     {
       "src": "index.js",
