@@ -14,13 +14,10 @@ import EmojiPicker, { Theme } from "emoji-picker-react";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { FaFile } from "react-icons/fa";
-
 import dynamic from "next/dynamic";
-
 const EmojiPickers = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
 });
-
 export default function Dashboard(props) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -36,36 +33,21 @@ export default function Dashboard(props) {
   const [message, setMessage] = useState([]);
   const [fileName, setFileName] = useState("");
   const Cryptr = require("cryptr");
-  console.log("secret key", props?.secret_key);
   const cryptr = new Cryptr(props?.secret_key);
-
   const [chData, setChdata] = useState([]);
-
   const chatEndRef = useRef(null);
-
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // props?.user_data?.chats.map((e, i) => {
-  //   console.log(decrypt(e.content));
-  // });
-
   useEffect(() => {
     if (props?.user_data?.user.length == 0) {
       router.push("/auth/login");
     }
     scrollToBottom();
   }, [chat]);
-
-  console.log(router.query?.user);
   if (unreadMessage[router.query?.user]) {
     setUnreadMessages([]);
-  } else {
-    console.log(unreadMessage[router.query?.user]);
-    console.log("unreadMessage not visited");
   }
-
   async function refreshList() {
     const result = await axios.get(
       `${props.api_url}/chat/${router.query?.user}`,
@@ -77,11 +59,7 @@ export default function Dashboard(props) {
       }
     );
     setUsers(result.data?.user_data);
-    console.log("refresh list", result.data?.user_data);
   }
-
-  console.log(message);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -99,46 +77,28 @@ export default function Dashboard(props) {
         console.error("Failed to fetch chat data:", error);
       }
     };
-
-    // Fetch data when the component mounts or the route changes
     if (router.query?.user) {
       fetchData();
     }
-
     if (socket) {
       socket.on("connect", () => {
         console.log("Connected to socket server.");
       });
-
       socket.emit("update_socket_id", username);
-
       socket.on("isTyping", (data) => {
         setTyping(data.isTyping);
-        console.log(data);
       });
       socket.on("private_message", (data) => {
-        console.log("unreadMessage", unreadMessage);
-        console.log("data of private mesaage", data);
-
         refreshList();
-
         if (router?.query?.user) {
-          console.log("ok i got it");
           setUnreadMessages((prev) => ({
             ...prev,
             [data.fromUsername]: true,
           }));
         }
-
-        console.log(router?.query?.user, data?.fromUsername);
         if (router?.query?.user === data?.fromUsername) {
           setUnreadMessages([]);
-        } else {
-          console.log("pathao");
         }
-
-        console.log(data);
-
         setLastMessages((prev) => ({
           ...prev,
           [data.fromUsername]: {
@@ -146,37 +106,29 @@ export default function Dashboard(props) {
             timestamp: data.timestamp,
           },
         }));
-
         setChat((prevChat) => [...prevChat, data]);
       });
-
       return () => {
         socket.off("connect");
         socket.off("private_message");
       };
     }
   }, [socket, router.query?.user]);
-
   const username = props?.user_data?.user[0]?.username || null;
-
   async function submitMessage(e) {
     e.preventDefault();
     const message = e.target.message.value;
     const recipient = router.query?.user;
-
     if (!recipient) {
       return;
     }
-
     const timestamp = new Date().toISOString();
-
     if (fileName) {
       const formData = new FormData();
       formData.append("file", e.target.fileInput.files[0]);
       formData.append("toUsername", recipient);
       formData.append("fromUsername", username);
       formData.append("timestamp", timestamp);
-
       try {
         const response = await axios.post(
           `${props.api_url}/chat/${recipient}`,
@@ -185,8 +137,6 @@ export default function Dashboard(props) {
             withCredentials: true,
           }
         );
-        console.log("File uploaded successfully:", response.data);
-
         // Clear the file input and state
         setFileName("");
         document.getElementById("fileInput").value = "";
@@ -194,7 +144,6 @@ export default function Dashboard(props) {
         console.error("Failed to upload file:", error);
       }
     } else if (message) {
-      // Emit the message via socket
       socket.emit("private_message", {
         content: message,
         toUsername: recipient,
@@ -203,8 +152,6 @@ export default function Dashboard(props) {
         fromUserFullname: `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}`,
         timestamp: timestamp,
       });
-
-      // Save the message in the database
       await axios.post(
         `${props.api_url}/chat/${recipient}`,
         {
@@ -222,7 +169,6 @@ export default function Dashboard(props) {
           },
         }
       );
-
       setChat((prev) => [
         ...prev,
         {
@@ -236,50 +182,27 @@ export default function Dashboard(props) {
       ]);
       setMessage("");
     }
-
     scrollToBottom();
   }
-
   function converTime(data) {
-    // Create a Date object from the string
     const date = new Date(data);
-
-    // Check if the date is valid
-
-    console.log(date.getTime());
     if (isNaN(date.getTime())) {
       return "Invalid date";
     }
-
-    // Extract hours, minutes, and seconds in local time
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-
-    // Determine AM/PM
     const ampm = hours >= 12 ? "PM" : "AM";
-
-    // Convert hours from 24-hour format to 12-hour format
     hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-
-    // Format minutes with leading zeros
+    hours = hours ? hours : 12;
     const minutesStr = minutes < 10 ? "0" + minutes : minutes;
-
-    // Format the final string
     const formattedTime = `${hours}:${minutesStr} ${ampm}`;
-
-    console.log(formattedTime);
-
     return formattedTime;
   }
-
   function Image_path(data) {
     return `https://api.dicebear.com/8.x/fun-emoji/svg?seed=${data}`;
   }
-
   const full_name = `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}`;
-
   function wordCheck(word) {
     if (word?.length > 10) {
       return `${word.slice(0, 10)}...`;
@@ -287,13 +210,9 @@ export default function Dashboard(props) {
       return word;
     }
   }
-
   const recipient = router.query?.user;
-
   function checkTyping() {
     setTimeout(() => {
-      console.log("not typing");
-
       socket.emit("isTyping", {
         isTyping: false,
         toUsername: recipient,
@@ -307,7 +226,6 @@ export default function Dashboard(props) {
       });
     }, 1000);
   }
-
   function handleKeyPress(e) {
     socket.emit("isTyping", {
       isTyping: true,
@@ -322,27 +240,21 @@ export default function Dashboard(props) {
     });
     checkTyping();
   }
-
   const handleEmojiClick = (emojiObject) => {
-    console.log(emojiObject);
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
-
   const handleImageClick = () => {
     document.getElementById("fileInput").click();
   };
-
   function handleFileChange(e) {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      console.log("File name:", file.name);
       setFileName(file.name);
     } else {
       console.log("No file selected");
     }
   }
-
   return (
     <div className="flex flex-col bg-gray-800">
       <div className="flex overflow-hidden" style={{ height: "calc(100vh)" }}>
@@ -401,9 +313,6 @@ export default function Dashboard(props) {
                               unreadMessage[user?.username] && "font-extrabold"
                             } font-normal`}
                           >
-                            {/* {chData?.fromUsername == user?.username
-                            ? `${chData?.content} `
-                            : ``} */}
                             {wordCheck(lastMessages[user.username]?.content) ||
                               "No messge"}
                           </p>
@@ -418,7 +327,6 @@ export default function Dashboard(props) {
               : "Loading ..."}
           </div>
         </div>
-
         <div className="w-full">
           <nav className="top-0 h-[65px] z-50 w-full bg-gray-800">
             <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -472,7 +380,6 @@ export default function Dashboard(props) {
                           )}
                         </div>
                       </button>
-
                       <div
                         className={`${
                           isSidebarOpen ? "flex" : "hidden"
@@ -522,16 +429,12 @@ export default function Dashboard(props) {
                                   :{" "}
                                 </span>
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {console.log("timestmp", message?.timestamp)}
                                   {converTime(message?.timestamp)}
                                 </span>
                               </div>
                               <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white break-all">
                                 {message.content}
                               </p>
-                              {/* <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                          Delivered
-                        </span> */}
                             </div>
                           </div>
                         </li>
@@ -539,7 +442,6 @@ export default function Dashboard(props) {
                     ) : (
                       <h1 className="  text-slate-400">No chat Found</h1>
                     )}
-
                     {typing ? (
                       <div
                         className={`flex flex-col w-[100px] border-gray-200 ml-[17px] "rounded-e-xl rounded-ee-xl rounded-se-xl rounded-es-xl bg-gray-700`}
@@ -548,7 +450,6 @@ export default function Dashboard(props) {
                           <span className="text-sm font-semibold text-gray-900 dark:text-white"></span>
                           <span className="text-sm font-normal text-gray-500 dark:text-gray-400"></span>
                         </div>
-
                         <Lottie
                           animationData={typingIndicator}
                           loop={true}
@@ -568,32 +469,7 @@ export default function Dashboard(props) {
           <footer className="bg-transparent p-5 h-[77px] -mt-[10px]">
             <div className="flex flex-col items-center gap-3 justify-center">
               <div className="w-full gap-3 flex-col flex justify-center items-center">
-                {/* {fileName && (
-                  <div
-                    className={
-                      "w-[200px] absolute bottom-[90px] flex gap-2 bg-slate-500  p-3"
-                    }
-                  >
-                    <FaFile className=" text-white text-4xl" />
-                    <h1 className={"text-xl break-words"}>
-                      {wordCheck(fileName)}
-                    </h1>
-                  </div>
-                )} */}
                 <form className="flex w-full md:w-2/3" onSubmit={submitMessage}>
-                  {/* <div className={" text-white text-4xl cursor-pointer"}>
-                    <input
-                      id="fileInput"
-                      type="file"
-                      accept="image/*"
-                      name="image"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-
-                    <MdOutlineUploadFile onClick={handleImageClick} />
-                  </div> */}
-
                   <div className="flex w-full justify-end items-center">
                     <input
                       type="text"

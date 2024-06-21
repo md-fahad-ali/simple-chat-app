@@ -68,18 +68,62 @@ module.exports = (io) => {
     return allowedExtensions.includes(file_name);
   }
 
+  router.get("/:username", async function (req, res) {
+    await connectDB();
+    console.log("request username", req.params.username);
+    const param_user = req.params.username;
+    const username = req.session?.passport?.user?.username || null;
+    try {
+      const find_user = await User.findOne({ username: param_user }).select(
+        "-password"
+      );
+      if (find_user) {
+        const find_data = await User.find({
+          username: { $ne: username },
+        }).select("-password");
+        const recipient_user = await User.findOne({
+          username: param_user,
+        }).select("-password");
+        const user = await User.findOne({ username: username }).select(
+          "-password"
+        );
+        console.log("username", req.session);
+        console.log("auth user data", user);
+        const chats = await Chat.find({
+          $or: [
+            {
+              $and: [{ fromUsername: username }, { toUsername: param_user }],
+            },
+            {
+              $and: [{ fromUsername: param_user }, { toUsername: username }],
+            },
+          ],
+        });
+        console.log(chats);
+        res.json({
+          user_data: find_data,
+          recipient_user: recipient_user,
+          user: user,
+          chats: chats,
+        });
+      } else {
+        res.status(404).json({ error: "User not found" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.json({ status: null });
+    }
+  });
+
   router.post("/:username", async function (req, res) {
     console.log("request username", req?.params.username);
-
     try {
       const toUser = await User.findOne({
         username: req.params?.username,
       }).select("-password");
-
       if (toUser && toUser.socket_id) {
         console.log(`Sending message to socket ID ${toUser.socket_id}`);
         const content = req.body.message;
-
         console.log(
           "username is chatroute",
           req.session?.passport?.user?.username
@@ -102,31 +146,28 @@ module.exports = (io) => {
         const save_info = await data.save();
         console.log(save_info);
       } else {
-        console.log(`User ${toUsername} not found or socket ID missing`);
+        console.log(
+          `User ${req.params.username} not found or socket ID missing`
+        );
       }
     } catch (error) {
       console.error("Error sending private message:", error);
     }
-
     res.json({ success: req.params.username });
   });
 
   router.post("/:username/file", (req, res, next) => {
     const form = new multiparty.Form();
-
     form.parse(req, async (err, fields, files) => {
       if (err) {
         res.status(500).send(err);
         return;
       }
-
       const file = files.file ? files.file[0] : null;
-
       if (file) {
         const isValidFile = checkFile(
           path.extname(file.originalFilename).slice(1)
         );
-
         if (isValidFile) {
           console.log("Valid file format");
           const tempPath = file.path;
@@ -137,7 +178,6 @@ module.exports = (io) => {
             "public/uploads",
             finalFileName
           );
-
           fs.copyFile(tempPath, targetPath, async (err) => {
             if (err) {
               res.status(500).send({
@@ -147,7 +187,6 @@ module.exports = (io) => {
               });
               return;
             }
-
             fs.unlink(tempPath, async (err) => {
               if (err) {
                 res.status(500).send({
@@ -158,15 +197,14 @@ module.exports = (io) => {
                 return;
               }
             });
-
             console.log(process.env.OWN_URL);
           });
         } else {
           console.log("Invalid file format");
         }
       }
+      res.json({ success: true });
     });
-    res.json({ success: true });
   });
 
   return router;
