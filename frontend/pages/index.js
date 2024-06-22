@@ -14,7 +14,6 @@ export default function Dashboard(props) {
   const socket = useSocket();
   const [users, setUsers] = useState(props?.user_data?.user_data || []);
   const [chat, setChat] = useState(props?.user_data?.chats || null);
-  const [tik, setTik] = useState(false);
   const [lastMessages, setLastMessages] = useState([]);
   const [unreadMessage, setUnreadMessages] = useState([]);
 
