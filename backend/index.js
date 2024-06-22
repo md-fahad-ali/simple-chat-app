@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://simple-chat-7fa1.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -50,7 +50,10 @@ connectDB()
 
     app.use(
       cors({
-        origin: "http://localhost:3000",
+        origin: [
+          "http://localhost:3000",
+          "https://simple-chat-7fa1.onrender.com",
+        ],
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true,
