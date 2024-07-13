@@ -5,12 +5,12 @@ const SocketContext = createContext();
 
 export const useSocket = () => useContext(SocketContext);
 
-export const SocketProvider = ({ children }) => {
+export const SocketProvider = ({ url, children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    console.log(process.env.API_URL);
-    const socketIo = io("https://simple-chat-app-3io6.onrender.com", {
+    
+    const socketIo = io(url, {
       withCredentials: true,
     });
     setSocket(socketIo);

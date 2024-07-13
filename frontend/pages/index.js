@@ -397,7 +397,7 @@ export default function Dashboard(props) {
 export async function getServerSideProps(context) {
   const { req, res } = context;
   const cookies = req.headers.cookie || "";
-  const result = await fetch(`${process.env.API_URL}`, {
+  const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -409,7 +409,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       user_data: data,
-      api_url: process.env?.API_URL,
+      api_url: process.env?.NEXT_PUBLIC_API_URL,
     },
   };
 }

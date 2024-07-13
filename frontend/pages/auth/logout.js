@@ -23,19 +23,22 @@ export async function getServerSideProps(context) {
   const cookies = req.headers.cookie || "";
 
   try {
-    const result = await axios.get(`${process.env.API_URL}/auth/logout`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookies,
-      },
-    });
+    const result = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookies,
+        },
+      }
+    );
 
     console.log(result.data);
 
     return {
       props: {
-        api_url: process.env.API_URL,
+        api_url: process.env.NEXT_PUBLIC_API_URL,
         auth_data: result.data,
       },
     };
@@ -44,7 +47,7 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        api_url: process.env.API_URL,
+        api_url: process.env.NEXT_PUBLIC_API_URL,
         auth_data: null,
       },
     };
