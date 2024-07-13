@@ -58,7 +58,7 @@ connectDB()
         maxAge: 30 * 60 * 60 * 1000,
         httpOnly: true,
         secure: false,
-        sameSite: "lax",
+        sameSite: "None",
       },
     });
 
