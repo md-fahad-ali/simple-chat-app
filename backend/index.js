@@ -12,33 +12,35 @@ const connectDB = require("./utils/db");
 const User = require("./models/users");
 const signupRouter = require("./auth/signup");
 const logoutRouter = require("./auth/logout");
-
+const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
-// const io = socketIo(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//     credentials: true,
-//   },
-// });
 
-const allowedOrigins = [`${process.env.API_URL}`, "http://localhost:3000"];
 
-const io = new Server(server, {
+const io = socketIo(server, {
   cors: {
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
     credentials: true,
   },
 });
+
+// const allowedOrigins = [`${process.env.API_URL}`, "http://localhost:3000"];
+
+// const io = new Server(server, {
+//   cors: {
+//     origin: (origin, callback) => {
+//       if (allowedOrigins.includes(origin) || !origin) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST"],
+//     allowedHeaders: ["Content-Type"],
+//     credentials: true,
+//   },
+// });
 
 // Database connection
 connectDB()
