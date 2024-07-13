@@ -584,7 +584,7 @@ export async function getServerSideProps(context) {
   const cookies = req.headers.cookie || "";
   try {
     const result = await fetch(
-      `http://localhost:4000/chat/${context?.params?.user}`,
+      `${process.env,API_URL}/chat/${context?.params?.user}`,
       {
         method: "GET",
         headers: {

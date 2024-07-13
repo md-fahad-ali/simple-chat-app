@@ -9,7 +9,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socketIo = io("http://localhost:4000", { withCredentials: true });
+    const socketIo = io("https://simple-chat-app-3io6.onrender.com", { withCredentials: true });
     setSocket(socketIo);
 
     return () => {
