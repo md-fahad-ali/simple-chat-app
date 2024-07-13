@@ -23,10 +23,20 @@ const server = http.createServer(app);
 //   },
 // });
 
-const io = socketIo(server, {
+const allowedOrigins = [`${process.env.API_URL}`, "http://localhost:3000"];
+
+const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
   },
 });
 
