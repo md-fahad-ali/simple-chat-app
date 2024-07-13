@@ -165,7 +165,7 @@ export default function Dashboard(props) {
                 <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
                   {props?.user_data?.user[0]?.image ? (
                     <Image
-                      src={props?.user_data?.user[0]?.image}
+                      src={props?.user_data?.user[0]?.image || null}
                       alt="User profile picture"
                       width={40}
                       height={40}
@@ -218,7 +218,7 @@ export default function Dashboard(props) {
                           <div class="relative">
                             {user?.image ? (
                               <Image
-                                src={`${user?.image}`}
+                                src={`${user?.image || null}`}
                                 alt={user?.username}
                                 width={100}
                                 height={100}
