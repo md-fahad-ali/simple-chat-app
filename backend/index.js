@@ -18,7 +18,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: "https://simple-chat-app-3io6.onrender.com",
+    origin: process.env.WEB_URL,
     methods: ["GET", "POST"],
     credentials: true,
   },
