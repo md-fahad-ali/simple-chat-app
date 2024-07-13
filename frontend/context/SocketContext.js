@@ -9,7 +9,8 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socketIo = io("https://simple-chat-app-3io6.onrender.com", { withCredentials: true });
+    console.log(process.env.API_URL)
+    const socketIo = io(`${process.env.API_URL}`, { withCredentials: true });
     setSocket(socketIo);
 
     return () => {

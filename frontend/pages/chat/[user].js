@@ -230,6 +230,7 @@ export default function Dashboard(props) {
   }
 
   const handleKeyPress = useCallback(
+    
     _.debounce((isTyping) => {
       socket.emit("isTyping", {
         isTyping: true,
@@ -584,7 +585,7 @@ export async function getServerSideProps(context) {
   const cookies = req.headers.cookie || "";
   try {
     const result = await fetch(
-      `${process.env,API_URL}/chat/${context?.params?.user}`,
+      `${(process.env.API_URL)}/chat/${context?.params?.user}`,
       {
         method: "GET",
         headers: {
@@ -605,7 +606,7 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        user_data: data,
+        user_data: data || null,
         api_url: process.env?.API_URL,
         secret_key: process.env?.SECRET_KEY,
       },

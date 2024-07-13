@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "debug": "echo $PATH && node -v && yarn -v && next -v",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
