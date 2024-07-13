@@ -31,8 +31,10 @@ passport.use(
           username: user.username,
         });
       } catch (error) {
-        console.log(error);
-        return done(null, false, { message: "Invalid email or password" });
+        console.error("Error during authentication:", error);
+        return done(null, false, {
+          message: "Something went wrong, please try again later",
+        });
       }
     }
   )
@@ -70,6 +72,7 @@ router.post("/", function (req, res, next) {
       if (err) {
         return next(err);
       }
+      console.log(req.session);
       res.json({ isAuth: true, user: user });
     });
   })(req, res, next);

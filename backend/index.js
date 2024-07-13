@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://simple-chat-7fa1.onrender.com"],
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -50,10 +50,7 @@ connectDB()
 
     app.use(
       cors({
-        origin: [
-          "http://localhost:3000",
-          "https://simple-chat-7fa1.onrender.com",
-        ],
+        origin:"http://localhost:3000",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type"],
         credentials: true,
@@ -171,7 +168,7 @@ connectDB()
     });
 
     // Start server
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 4000;
     server.listen(port, () => {
       console.log("Server is running on port 4000");
     });

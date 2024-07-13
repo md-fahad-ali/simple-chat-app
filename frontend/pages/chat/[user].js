@@ -14,6 +14,8 @@ import EmojiPicker, { Theme } from "emoji-picker-react";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { MdOutlineUploadFile } from "react-icons/md";
 import { FaFile } from "react-icons/fa";
+import _ from "lodash";
+
 import dynamic from "next/dynamic";
 const EmojiPickers = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
@@ -226,20 +228,25 @@ export default function Dashboard(props) {
       });
     }, 1000);
   }
-  function handleKeyPress(e) {
-    socket.emit("isTyping", {
-      isTyping: true,
-      toUsername: recipient,
-      toUserFullname:
-        `${props?.user_data?.recipient_user[0]?.first_name} ${props?.user_data?.recipient_user[0]?.last_name}` ||
-        "",
-      fromUsername: username,
-      fromUserFullname:
-        `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}` ||
-        "",
-    });
-    checkTyping();
-  }
+
+  const handleKeyPress = useCallback(
+    _.debounce((isTyping) => {
+      socket.emit("isTyping", {
+        isTyping: true,
+        toUsername: recipient,
+        toUserFullname:
+          `${props?.user_data?.recipient_user[0]?.first_name} ${props?.user_data?.recipient_user[0]?.last_name}` ||
+          "",
+        fromUsername: username,
+        fromUserFullname:
+          `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}` ||
+          "",
+      });
+      checkTyping();
+    }, 1000),
+    [username, recipient, props.user_data]
+  );
+
   const handleEmojiClick = (emojiObject) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
@@ -255,6 +262,22 @@ export default function Dashboard(props) {
       console.log("No file selected");
     }
   }
+
+  const handleChange = useCallback(
+    (event) => {
+      const value = event.target.value;
+      setMessage(value);
+      handleKeyPress(event);
+    },
+    [handleKeyPress, setMessage]
+  );
+
+  useEffect(() => {
+    return () => {
+      handleKeyPress.cancel(); // Cleanup debounce function on unmount or dependencies change
+    };
+  }, [handleKeyPress]);
+
   return (
     <div className="flex flex-col bg-gray-800">
       <div className="flex overflow-hidden" style={{ height: "calc(100vh)" }}>
@@ -476,10 +499,7 @@ export default function Dashboard(props) {
                       name="message"
                       placeholder="Type a message..."
                       className="w-full p-2 rounded-md focus:outline-none bg-slate-600 text-white focus:border-blue-500"
-                      onChange={(e) => {
-                        setMessage(e.target.value);
-                        handleKeyPress(e);
-                      }}
+                      onChange={handleChange}
                       value={message}
                     />
                     <div
