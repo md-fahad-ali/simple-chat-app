@@ -582,6 +582,8 @@ export default function Dashboard(props) {
 export async function getServerSideProps(context) {
   const { req } = context;
   const cookies = req.headers.cookie || "";
+
+  console.log(process.env.NEXT_PUBLIC_API_URL);
   try {
     const result = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/chat/${context?.params?.user}`,
@@ -606,7 +608,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         user_data: data || null,
-        api_url: process.env?.API_URL,
+        api_url: process.env?.NEXT_PUBLIC_API_URL,
         secret_key: process.env?.SECRET_KEY,
       },
     };
