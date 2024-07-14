@@ -22,6 +22,8 @@ export async function getServerSideProps(context) {
   });
   const data = await result.json();
 
+  console.log(cookies);
+
   return {
     props: {
       user_data: data,
