@@ -138,7 +138,7 @@ export default function Login(props) {
                 </div>
                 <button
                   type="submit"
-                  class="w-full text-white bg-slate-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center content-center justify-center"
+                  className="w-full text-white bg-slate-900 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex items-center content-center justify-center"
                 >
                   Sign in
                   {clicked && (
@@ -164,11 +164,11 @@ export default function Login(props) {
                     </svg>
                   )}
                 </button>{" "}
-                <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don't have an account yet?{" "}
                   <a
                     href="#"
-                    class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Sign up
                   </a>
@@ -184,7 +184,6 @@ export default function Login(props) {
 export async function getServerSideProps(context) {
   const { req, res } = context;
 
-  // Forward the cookie from the request headers
   const cookies = req.headers.cookie || "";
 
   try {
