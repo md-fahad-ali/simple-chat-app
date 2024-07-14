@@ -21,7 +21,7 @@ export default function Login(props) {
       try {
         setClicked(true);
         const result = await axios.post(
-          `${props.api_url}/auth/signup`,
+          `/api/auth/signup`,
           {
             username: username.value,
             email: email.value,
@@ -227,7 +227,7 @@ export async function getServerSideProps(context) {
 
   try {
     const result = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/isAuth`,
+      `${process.env.NEXT_PUBLIC_WEB_URL}/api/isAuth`,
       {
         withCredentials: true,
         headers: {

@@ -51,15 +51,12 @@ export default function Dashboard(props) {
     setUnreadMessages([]);
   }
   async function refreshList() {
-    const result = await axios.get(
-      `${props.api_url}/chat/${router.query?.user}`,
-      {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const result = await axios.get(`/api/chat/${router.query?.user}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     setUsers(result.data?.user_data);
   }
   useEffect(() => {
@@ -132,13 +129,9 @@ export default function Dashboard(props) {
       formData.append("fromUsername", username);
       formData.append("timestamp", timestamp);
       try {
-        const response = await axios.post(
-          `${props.api_url}/chat/${recipient}`,
-          formData,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(`/api/chat/${recipient}`, formData, {
+          withCredentials: true,
+        });
         // Clear the file input and state
         setFileName("");
         document.getElementById("fileInput").value = "";
@@ -155,7 +148,7 @@ export default function Dashboard(props) {
         timestamp: timestamp,
       });
       await axios.post(
-        `${props.api_url}/chat/${recipient}`,
+        `/api/chat/${recipient}`,
         {
           message,
           msg_for: recipient,
@@ -586,7 +579,7 @@ export async function getServerSideProps(context) {
   console.log(process.env.NEXT_PUBLIC_API_URL);
   try {
     const result = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/chat/${context?.params?.user}`,
+      `${process.env.NEXT_PUBLIC_WEB_URL}/api/chat/${context?.params?.user}`,
       {
         method: "GET",
         headers: {

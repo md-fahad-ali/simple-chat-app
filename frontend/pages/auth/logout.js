@@ -24,7 +24,7 @@ export async function getServerSideProps(context) {
 
   try {
     const result = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      `${process.env.NEXT_PUBLIC_WEB_URL}/api/auth/logout`,
       {
         withCredentials: true,
         headers: {

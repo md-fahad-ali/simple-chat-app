@@ -39,7 +39,7 @@ export default function Dashboard(props) {
 
   async function refreshList() {
     try {
-      const result = await axios.get(props?.api_url, {
+      const result = await axios.get("/api", {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
@@ -55,15 +55,12 @@ export default function Dashboard(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(
-          `${props.api_url}/chat/${router.query?.user}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const result = await axios.get(`/api/chat/${router.query?.user}`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         setChat(result.data.chats || []);
       } catch (error) {
         console.error("Failed to fetch chat data:", error);
@@ -397,7 +394,7 @@ export default function Dashboard(props) {
 export async function getServerSideProps(context) {
   const { req, res } = context;
   const cookies = req.headers.cookie || "";
-  const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
+  const result = await fetch(`${process.env.NEXT_PUBLIC_WEB_URL}/api`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -84,7 +84,7 @@ export default function Setup({ auth_data, api_url }) {
     }
 
     try {
-      const result = await axios.post(`${api_url}/setup`, formData, {
+      const result = await axios.post(`/api/setup`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -238,13 +238,16 @@ export async function getServerSideProps(context) {
   const cookies = req.headers.cookie || "";
 
   try {
-    const result = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/setup`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookies,
-      },
-    });
+    const result = await axios.get(
+      `${process.env.NEXT_PUBLIC_WEB_URL}/api/setup`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookies,
+        },
+      }
+    );
 
     console.log("result.data", result.data);
 
