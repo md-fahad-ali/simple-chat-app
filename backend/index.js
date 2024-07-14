@@ -46,6 +46,8 @@ connectDB()
   .then(() => {
     console.log("Connected to MongoDB", process.env.NODE_ENV);
 
+    app.set("trust proxy", 1);
+
     const sessionMiddleware = session({
       secret: "keyboard cat",
       saveUninitialized: false,
