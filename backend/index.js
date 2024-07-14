@@ -44,7 +44,7 @@ const io = socketIo(server, {
 // Database connection
 connectDB()
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to MongoDB", process.env.NODE_ENV);
 
     const sessionMiddleware = session({
       secret: "keyboard cat",
