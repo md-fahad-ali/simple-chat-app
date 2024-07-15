@@ -422,37 +422,43 @@ export default function Dashboard(props) {
                     {chat.length > 0 ? (
                       chat.map((message, index) => (
                         <li key={index} className={`p-4 flex flex-col w-full`}>
-                          <div
-                            className={`flex ${
-                              message?.fromUserFullname == full_name
-                                ? "justify-end"
-                                : "justify-start"
-                            }`}
-                          >
+                          {message.fromUsername === router.query?.user ||
+                          message.fromUsername ===
+                            props?.user_data?.user[0]?.username ? (
                             <div
-                              className={`flex w-auto flex-col max-w-[320px] leading-1.5 p-4 border-gray-200 bg-gray-100  ${
+                              className={`flex ${
                                 message?.fromUserFullname == full_name
-                                  ? "rounded-l-lg rounded-b-lg"
-                                  : "rounded-e-xl rounded-es-xl"
-                              } bg-gray-700`}
+                                  ? "justify-end"
+                                  : "justify-start"
+                              }`}
                             >
-                              <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                                  {message?.fromUserFullname ==
-                                  `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}`
-                                    ? "me"
-                                    : message?.fromUserFullname}
-                                  :{" "}
-                                </span>
-                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                  {converTime(message?.timestamp)}
-                                </span>
+                              <div
+                                className={`flex w-auto flex-col max-w-[320px] leading-1.5 p-4 border-gray-200 bg-gray-100  ${
+                                  message?.fromUserFullname == full_name
+                                    ? "rounded-l-lg rounded-b-lg"
+                                    : "rounded-e-xl rounded-es-xl"
+                                } bg-gray-700`}
+                              >
+                                <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {message?.fromUserFullname ==
+                                    `${props?.user_data?.user[0]?.first_name} ${props?.user_data?.user[0]?.last_name}`
+                                      ? "me"
+                                      : message?.fromUserFullname}
+                                    :{" "}
+                                  </span>
+                                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                    {converTime(message?.timestamp)}
+                                  </span>
+                                </div>
+                                <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white break-all">
+                                  {message.content}
+                                </p>
                               </div>
-                              <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white break-all">
-                                {message.content}
-                              </p>
                             </div>
-                          </div>
+                          ) : (
+                            ""
+                          )}
                         </li>
                       ))
                     ) : (
