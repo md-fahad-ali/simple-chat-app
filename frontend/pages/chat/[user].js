@@ -62,16 +62,14 @@ export default function Dashboard(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(
-          `${props.api_url}/chat/${router.query?.user}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const result = await axios.get(`/api/chat/${router.query?.user}`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         setChat(result.data.chats || []);
+        console.log(chat);
       } catch (error) {
         console.error("Failed to fetch chat data:", error);
       }
@@ -105,7 +103,9 @@ export default function Dashboard(props) {
             timestamp: data.timestamp,
           },
         }));
+
         setChat((prevChat) => [...prevChat, data]);
+        console.log(chat);
       });
       return () => {
         socket.off("connect");
@@ -411,7 +411,7 @@ export default function Dashboard(props) {
               </div>
             </div>
           </nav>
-          <div className="flex h-1/2" style={{ height: " calc(100% - 142px)" }}>
+          <div className="flex h-1/2" style={{ height: " calc(95% - 142px)" }}>
             <div
               className="flex md:block w-full flex-col justify-end"
               style={{ display: "flex" }}
@@ -497,7 +497,7 @@ export default function Dashboard(props) {
                     />
                     <div
                       className={
-                        "text-slate-400 text-3xl mb-7 absolute cursor-pointer"
+                        "text-slate-400 text-3xl mb-auto absolute cursor-pointer"
                       }
                       onClick={(e) => {
                         e.preventDefault(); // Prevent the form submission
@@ -576,7 +576,7 @@ export async function getServerSideProps(context) {
   const { req } = context;
   const cookies = req.headers.cookie || "";
 
-  console.log(process.env.NEXT_PUBLIC_API_URL);
+  // console.log(process.env.NEXT_PUBLIC_API_URL);
   try {
     const result = await fetch(
       `${process.env.NEXT_PUBLIC_WEB_URL}/api/chat/${context?.params?.user}`,
@@ -590,7 +590,7 @@ export async function getServerSideProps(context) {
     );
     const data = await result.json();
 
-    console.log(data);
+    // console.log(data);
 
     if (data?.error) {
       return {
