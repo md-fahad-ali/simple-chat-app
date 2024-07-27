@@ -166,12 +166,12 @@ export default function Login(props) {
                 </button>{" "}
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don't have an account yet?{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/auth/signup"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Sign up
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>

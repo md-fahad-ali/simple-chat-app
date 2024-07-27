@@ -230,7 +230,7 @@ export default function Dashboard(props) {
                                 className="w-12 h-12 rounded-full"
                               />
                             )}
-                            <span class="absolute left-9 top-1 h-3 w-3 top-12 left-16 bg-green-500 rounded-full"></span>
+                            {/* <span class="absolute left-9 top-1 h-3 w-3 top-12 left-16 bg-green-500 rounded-full"></span> */}
                           </div>
                         </div>
                       </div>

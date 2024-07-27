@@ -316,7 +316,7 @@ export default function Dashboard(props) {
                               className="w-12 h-12 rounded-full"
                             />
                           )}
-                          <span class="absolute left-9 top-1 h-3 w-3 top-9 left-16 bg-green-500 rounded-full"></span>
+                          {/* <span class="absolute left-9 top-1 h-3 w-3 top-9 left-16 bg-green-500 rounded-full"></span> */}
                         </div>
                       </div>
                       <div className="flex w-2/3 justify-between items-center">
@@ -462,7 +462,13 @@ export default function Dashboard(props) {
                         </li>
                       ))
                     ) : (
-                      <h1 className="  text-slate-400">No chat Found</h1>
+                      <div className="w-full flex items-center justify-center">
+                        <div className=" bg-slate-500 w-1/2">
+                          <h1 className="text-slate-400 text-center">
+                            No chat Found
+                          </h1>
+                        </div>
+                      </div>
                     )}
                     {typing ? (
                       <div

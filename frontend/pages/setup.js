@@ -26,9 +26,10 @@ export default function Setup({ auth_data, api_url }) {
 
   useEffect(() => {
     if (!username) {
-      // router.push("/auth/login");
+      router.push("/auth/login");
     } else if (auth_data?.user_data?.first_name) {
-      // router.push("/");
+      console.log(auth_data?.user_data);
+      router.push("/");
     }
   }, [username, router]);
 
@@ -105,7 +106,7 @@ export default function Setup({ auth_data, api_url }) {
         progress: undefined,
         theme: "dark",
       });
-      //  router.push("/");
+      router.push("/");
     } catch (error) {
       setErr(error?.response?.data);
       console.error("Error updating account information:", error);

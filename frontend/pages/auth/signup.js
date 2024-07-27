@@ -203,12 +203,12 @@ export default function Login(props) {
                 </button>{" "}
                 <p class="text-sm font-light text-gray-500 text-gray-400">
                   Already have an account?{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/auth/login"
                     class="font-medium text-primary-600 hover:underline text-primary-500"
                   >
                     Login here
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>
