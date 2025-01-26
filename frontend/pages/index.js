@@ -16,6 +16,7 @@ export default function Dashboard(props) {
   const [chat, setChat] = useState(props?.user_data?.chats || null);
   const [lastMessages, setLastMessages] = useState([]);
   const [unreadMessage, setUnreadMessages] = useState([]);
+  const [attemptCounts, setAttemptCounts] = useState(0);
 
   const handleLogout = () => {
     router.push("/auth/logout");
@@ -37,7 +38,6 @@ export default function Dashboard(props) {
         return;
       } catch (error) {
         console.log(`Attempt ${attemptCount} failed:`, error);
-        attemptCount++;
         
         await new Promise(resolve => setTimeout(resolve, 5000));
       }
@@ -47,7 +47,7 @@ export default function Dashboard(props) {
   const chatEndRef = useRef(null);
 
   // console.log(props?.user_data?.user[0]?.username || null);
-
+  console.log(attemptCounts);
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -160,6 +160,21 @@ export default function Dashboard(props) {
             due to serverless I have to wake up the API. Please be patient and
             refresh it.
           </h1>
+          <div className="text-black mt-4">
+            {(() => {
+              const [attempt, setAttempt] = useState(1);
+              
+              useEffect(() => {
+                const interval = setInterval(() => {
+                  setAttempt(prev => prev + 1);
+                }, 5000);
+
+                return () => clearInterval(interval);
+              }, []);
+
+              return <p className="text-gray-500 text-md">Attempt {attempt}</p>;
+            })()}
+          </div>
           {(() => {
             wakeUp();
             return null;
